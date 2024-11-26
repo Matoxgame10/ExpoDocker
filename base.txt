@@ -1,0 +1,70 @@
+CREATE DATABASE todo_list;
+USE todo_list;
+
+CREATE TABLE to_dos(
+	id int auto_increment primary key,
+    titulo varchar(50) not null,
+    descripcion text not null,
+	estado ENUM('En Proceso', 'Por Hacer', 'Finalizada') DEFAULT 'Por Hacer',
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+INSERT INTO to_dos (titulo,descripcion) VALUES ("Lavar la ropa","Tengo que lavar la ropa antes de las 12");
+INSERT INTO to_dos (titulo,descripcion) VALUES ("Hacer Tarea","Tengo que bañarme antes de salir");
+
+DELIMITER //
+CREATE PROCEDURE checkIfExists(idUsuario int, out resultado boolean)
+BEGIN
+ DECLARE contador int;
+ 
+ SELECT count(*) into contador
+ FROM to_dos 
+ WHERE id = idUsuario;
+ 
+ IF contador > 0 THEN 
+  SET resultado = 1;
+ ELSE 
+  SET resultado = 0;
+ END IF;
+END//
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE addTodo(title varchar(50), des text)
+BEGIN
+ INSERT INTO to_dos (titulo,descripcion) VALUES (title,des);
+END//
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE updateTodo(idActualizar int, title varchar(50), des text)
+BEGIN
+ CALL checkIfExists(idActualizar, @existe);
+ select @existe;
+ if @existe then
+  UPDATE to_dos SET titulo = title, descripcion = des WHERE id = idActualizar;
+ else 
+  SIGNAL SQLSTATE '45000'
+  SET MESSAGE_TEXT = 'Error No existe este usuario';
+ end if;
+END//
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE deleteTodo(idEliminar int)
+BEGIN
+  CALL checkIfExists(idEliminar, @existe);
+ select @existe;
+ if @existe then
+   DELETE FROM to_dos WHERE id = idEliminar; 
+ else 
+  SIGNAL SQLSTATE '45000'
+  SET MESSAGE_TEXT = 'Error No existe este usuario';
+ end if;
+END//
+DELIMITER ;
+
+#Un apartado para cosas por hacer 
+#Las que estan haciendose 
+#Y las que ya acabe de hacer
+

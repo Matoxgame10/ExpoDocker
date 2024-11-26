@@ -1,0 +1,25 @@
+GET http://localhost:3000/api
+
+
+###Buscar por id
+GET http://localhost:3000/api/search?idTarea=1
+###Crear una tarea
+POST http://localhost:3000/api/create
+Content-Type: application/json
+
+{
+    "titulo":"         asdfasd ",
+    "descripcion":"      dfsdfgsdfg   "
+}
+
+###Actualizar una tarea
+PUT http://localhost:3000/api/update/3
+Content-Type: application/json
+
+{
+    "titulo":"Bañar al gato",
+    "descripcion":"bañar al gato a las 10"
+}
+
+###Eliminar una tarea
+DELETE http://localhost:3000/api/delete/3
